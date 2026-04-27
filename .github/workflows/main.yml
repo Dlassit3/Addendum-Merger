@@ -1,0 +1,35 @@
+name: Build Windows EXE
+ 
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+ 
+jobs:
+  build:
+    runs-on: windows-latest
+ 
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+ 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+ 
+      - name: Install dependencies
+        run: |
+          pip install pypdf pyinstaller
+ 
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile --windowed --name "AddendumMerger" --hidden-import pypdf --hidden-import pypdf.generic addendum_mergerv5.py
+ 
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AddendumMerger
+          path: dist/AddendumMerger.exe
+
+ 
